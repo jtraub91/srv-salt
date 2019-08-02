@@ -4,6 +4,7 @@ install_apache:
 
 install_mod_wsgi:
   pkg.installed:
-    - name: libapache2-mod-wsgi
+    - pkgs: 
+      - libapache2-mod-wsgi-py3
     - require:
       - pkg: install_apache

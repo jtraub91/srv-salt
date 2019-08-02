@@ -1,4 +1,4 @@
-base
+base:
   '*':
     - common  
   'minion1':
@@ -8,4 +8,4 @@ base
     - flask_app
   'minion2':
     # minion2 is the db
-    - postgresql
+    - psql
