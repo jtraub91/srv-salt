@@ -1,5 +1,9 @@
-create_wsgi_user_and_group:
+create_wsgi_user:
   user.present:
+    - name: wsgi
+
+check_if_wsgi_group_present:
+  group.present:
     - name: wsgi
 
 clone_repo:
@@ -12,26 +16,30 @@ create_virtual_env:
   cmd.run:
     - name: 'cd /srv/supersimpleflaskapp && virtualenv venv'
 
+install_requirements:
+  cmd.run:
+    - name: 'cd /srv/supersimpleflaskapp && . venv/bin/activate && pip install -r /srv/supersimpleflaskapp/requirements.txt'
+
 wsgi_chown:
   file.directory:
     - name: /srv/supersimpleflaskapp
     - user: wsgi
     - group: wsgi
-    - mode: 755
+    - mode: 644
     - recurse:
       - user
       - group
       - mode
 
-apache_wsgi_virtual_host_file:
-  file.managed:
-    - name: /etc/apache2/sites-available/supersimpleflaskapp.conf
-    - source: salt://supersimpleflaskapp.conf
-
 apache_conf:
   file.managed:
     - name: /etc/apache2/apache2.conf
-    - source: salt://apache2.conf
+    - source: salt://apache-conf/apache2.conf
+
+apache_wsgi_virtual_host_file:
+  file.managed:
+    - name: /etc/apache2/sites-available/supersimpleflaskapp.conf
+    - source: salt://apache-conf/supersimpleflaskapp.conf
 
 disensite_000default:
   cmd.run:
